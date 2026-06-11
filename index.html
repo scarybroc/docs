@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quick SNF PT Notes</title>
+<style>
+  :root { --bg:#f6f7fb; --card:#fff; --text:#202124; --muted:#6b7280; --primary:#1f2937; --accent:#2563eb; --border:#d1d5db; }
+  *{box-sizing:border-box}
+  body{font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text);margin:0;padding:16px;}
+  .wrap{max-width:960px;margin:0 auto;}
+  h1{font-size:26px;margin:4px 0 6px;} .subtitle{color:var(--muted);margin-bottom:16px;}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .tab{border:1px solid var(--border);background:#fff;border-radius:999px;padding:10px 14px;cursor:pointer;font-weight:700;}
+  .tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .panel{display:none}.panel.active{display:block}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  h2{font-size:20px;margin:0 0 12px;} h3{font-size:16px;margin:14px 0 8px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;}
+  button.choice{border:1px solid var(--border);background:#f9fafb;border-radius:10px;padding:11px 8px;font-size:14px;cursor:pointer;}
+  button.choice.active{background:var(--accent);color:white;border-color:var(--accent);}
+  select,input,textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:11px;font-size:15px;background:white;}
+  textarea{height:230px;line-height:1.4;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;} @media(max-width:650px){.row{grid-template-columns:1fr}}
+  .action{border:none;border-radius:10px;padding:12px 14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;margin-right:6px;}
+  .create{background:var(--primary);color:white}.copy{background:#059669;color:white}.clear{background:#e5e7eb;color:#111827}
+  .status{font-size:13px;color:#059669;margin-top:6px;min-height:18px}.note{font-size:12px;color:var(--muted);margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Quick SNF PT Notes</h1>
+  <div class="subtitle">Choose a group, click boxes, create note, copy/paste.</div>
+  <div class="tabs">
+    <button class="tab active" data-tab="therex">TherEx</button>
+    <button class="tab" data-tab="theract">TherAct</button>
+    <button class="tab" data-tab="gait">Gait Training</button>
+    <button class="tab" data-tab="stairs">Stair Training</button>
+  </div>
+
+  <section id="therex" class="panel active">
+    <div class="card"><h2>Therapeutic Exercises</h2>
+      <h3>Position</h3><div class="grid single" data-group="te_position"><button class="choice active">seated BLE</button><button class="choice">supine BLE</button><button class="choice">standing BLE</button><button class="choice">EOB BLE</button><button class="choice">bed-level BLE</button></div>
+      <h3>Exercises</h3><div class="grid multi" data-group="te_exercises"><button class="choice active">LAQ</button><button class="choice active">marching</button><button class="choice active">hip abduction</button><button class="choice">hip adduction</button><button class="choice active">ankle pumps</button><button class="choice">heel raises</button><button class="choice">toe raises</button><button class="choice">hamstring curls</button><button class="choice">quad sets</button><button class="choice">glute sets</button><button class="choice">heel slides</button><button class="choice">SLR</button><button class="choice">mini squats</button><button class="choice">sit<>stands</button></div>
+      <div class="row"><div><h3>Reps</h3><select id="te_reps"><option>2x10 reps</option><option>1x10 reps</option><option>2x15 reps</option><option>3x10 reps</option><option>3x15 reps</option><option>as tolerated</option></select></div><div><h3>Resistance</h3><select id="te_resistance"><option>no resistance</option><option>with yellow TB</option><option>with red TB</option><option>with green TB</option><option>with 1 lb ankle weights</option><option>with 2 lb ankle weights</option></select></div></div>
+      <h3>Skilled Cues</h3><div class="grid multi" data-group="te_cues"><button class="choice active">VCs</button><button class="choice active">TCs</button><button class="choice">visual cues</button><button class="choice">demonstration</button><button class="choice active">proper technique</button><button class="choice active">pacing</button><button class="choice">breathing</button><button class="choice active">postural alignment</button><button class="choice">muscle activation</button><button class="choice">safety awareness</button><button class="choice">full available ROM</button></div>
+      <h3>Functional Reason</h3><select id="te_reason"><option>increase independence with functional tasks</option><option>improve ability to safely perform transfers in preparation for ambulation</option><option>improve ability to ambulate with assistive device</option><option>facilitate ability to come to stance</option><option>improve balance for safe functional mobility</option><option>promote maximum cardiopulmonary performance during functional mobility</option></select>
+      <button class="action create" onclick="makeTherEx()">Create</button><button class="action copy" onclick="copyOut('te_out','te_status')">Copy</button><div id="te_status" class="status"></div><textarea id="te_out"></textarea>
+    </div>
+  </section>
+
+  <section id="theract" class="panel">
+    <div class="card"><h2>Therapeutic Activities</h2>
+      <h3>Activity</h3><div class="grid multi" data-group="ta_activity"><button class="choice active">bed mobility</button><button class="choice active">sit<>stand transfers</button><button class="choice">bed<>WC transfers</button><button class="choice">toilet transfers</button><button class="choice">stand pivot transfers</button><button class="choice">squat pivot transfers</button><button class="choice">standing tolerance</button><button class="choice">dynamic standing balance</button></div>
+      <div class="row"><div><h3>Assistive Device</h3><select id="ta_ad"><option>FWW</option><option>4WW</option><option>SPC</option><option>quad cane</option><option>hemi walker</option><option>slide board</option><option>wheelchair</option><option>no AD</option></select></div><div><h3>Assist Level</h3><select id="ta_assist"><option>CGA</option><option>M/I</option><option>Supervision</option><option>SBA</option><option>Min A</option><option>Mod A</option><option>Max A</option><option>TD</option></select></div></div>
+      <h3>Skilled Cues</h3><div class="grid multi" data-group="ta_cues"><button class="choice active">hand placement</button><button class="choice active">sequencing</button><button class="choice active">safety awareness</button><button class="choice">anterior weight shift</button><button class="choice">upright posture</button><button class="choice">AD management</button><button class="choice">controlled descent</button><button class="choice">energy conservation</button></div>
+      <button class="action create" onclick="makeTherAct()">Create</button><button class="action copy" onclick="copyOut('ta_out','ta_status')">Copy</button><div id="ta_status" class="status"></div><textarea id="ta_out"></textarea>
+    </div>
+  </section>
+
+  <section id="gait" class="panel">
+    <div class="card"><h2>Gait Training</h2>
+      <div class="row"><div><h3>Assistive Device</h3><select id="gt_ad"><option>FWW</option><option>4WW</option><option>SPC</option><option>quad cane</option><option>hemi walker</option><option>parallel bars</option><option>no AD</option></select></div><div><h3>Assist Level</h3><select id="gt_assist"><option>CGA</option><option>SBA</option><option>Supervision</option><option>Min A</option><option>Mod A</option><option>Max A</option><option>TD</option></select></div></div>
+      <h3>Distance</h3><input id="gt_dist" placeholder="ex: 15 ft, 50 ft x2, 125 ft" />
+      <h3>Gait Cues / Deficits</h3><div class="grid multi" data-group="gt_cues"><button class="choice active">AD management</button><button class="choice active">upright posture</button><button class="choice">step length</button><button class="choice">foot clearance</button><button class="choice">weight shifting</button><button class="choice active">safety awareness</button><button class="choice">turning sequencing</button><button class="choice">pacing</button><button class="choice">obstacle negotiation</button><button class="choice">energy conservation</button></div>
+      <button class="action create" onclick="makeGait()">Create</button><button class="action copy" onclick="copyOut('gt_out','gt_status')">Copy</button><div id="gt_status" class="status"></div><textarea id="gt_out"></textarea>
+    </div>
+  </section>
+
+  <section id="stairs" class="panel">
+    <div class="card"><h2>Stair Training</h2>
+      <div class="row"><div><h3>Railings</h3><select id="st_rail"><option>bilateral rails</option><option>one rail</option><option>rail and cane</option><option>no rail</option></select></div><div><h3>Assist Level</h3><select id="st_assist"><option>CGA</option><option>SBA</option><option>Supervision</option><option>Min A</option><option>Mod A</option><option>Max A</option></select></div></div>
+      <h3>Steps</h3><input id="st_steps" placeholder="ex: 4 steps, 6 steps" />
+      <h3>Skilled Cues</h3><div class="grid multi" data-group="st_cues"><button class="choice active">sequencing</button><button class="choice active">foot placement</button><button class="choice">rail management</button><button class="choice">pacing</button><button class="choice active">safety awareness</button><button class="choice">step-to pattern</button></div>
+      <button class="action create" onclick="makeStairs()">Create</button><button class="action copy" onclick="copyOut('st_out','st_status')">Copy</button><div id="st_status" class="status"></div><textarea id="st_out"></textarea>
+    </div>
+  </section>
+
+  <div class="note">Closing sentence is automatically added: Overall, pt tolerated the therapy well without adverse reaction. Call light left within reach and all needs met.</div>
+</div>
+<script>
+const ending = "Overall, pt tolerated the therapy well without adverse reaction. Call light left within reach and all needs met.";
+function selected(group){return Array.from(document.querySelectorAll('[data-group="'+group+'"] .choice.active')).map(b=>b.textContent)}
+function first(group, fallback){const a=selected(group);return a.length?a[0]:fallback}
+function list(a){if(a.length===0)return ""; if(a.length===1)return a[0]; if(a.length===2)return a[0]+" and "+a[1]; return a.slice(0,-1).join(", ") + ", and " + a[a.length-1];}
+document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{const p=b.parentElement;if(p.classList.contains('single'))p.querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));b.classList.toggle('active')}));
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById(t.dataset.tab).classList.add('active')}));
+function makeTherEx(){const pos=first('te_position','[position]'), ex=list(selected('te_exercises'))||'[exercises]', reps=document.getElementById('te_reps').value, res=document.getElementById('te_resistance').value, cues=list(selected('te_cues'))||'[skilled cues]', reason=document.getElementById('te_reason').value;document.getElementById('te_out').value=`Pt performed ${pos} therapeutic exercises including ${ex} ${reps} ${res}. Skilled PT provided ${cues}. Therapeutic exercise was performed to improve strength, endurance, postural control, and functional mobility in order to ${reason}.\n\n${ending}`;}
+function makeTherAct(){const act=list(selected('ta_activity'))||'[activity]', ad=document.getElementById('ta_ad').value, assist=document.getElementById('ta_assist').value, cues=list(selected('ta_cues'))||'[skilled cues]';document.getElementById('ta_out').value=`Pt participated in therapeutic activities including ${act} with ${ad} requiring ${assist}. Skilled PT provided cueing for ${cues} to improve safety, sequencing, functional mobility, and independence with daily tasks.\n\n${ending}`;}
+function makeGait(){const ad=document.getElementById('gt_ad').value, assist=document.getElementById('gt_assist').value, dist=document.getElementById('gt_dist').value.trim()||'[distance]', cues=list(selected('gt_cues'))||'[skilled cues]';document.getElementById('gt_out').value=`Pt participated in gait training ${dist} with ${ad} requiring ${assist}. Skilled PT provided cueing for ${cues} to improve gait safety, sequencing, balance, and functional mobility.\n\n${ending}`;}
+function makeStairs(){const rail=document.getElementById('st_rail').value, assist=document.getElementById('st_assist').value, steps=document.getElementById('st_steps').value.trim()||'[steps]', cues=list(selected('st_cues'))||'[skilled cues]';document.getElementById('st_out').value=`Pt participated in stair training x ${steps} using ${rail} requiring ${assist}. Skilled PT provided cueing for ${cues} to improve safety, sequencing, and functional stair negotiation.\n\n${ending}`;}
+async function copyOut(outId,statusId){const txt=document.getElementById(outId).value;try{await navigator.clipboard.writeText(txt);document.getElementById(statusId).textContent='Copied.'}catch(e){const out=document.getElementById(outId);out.focus();out.select();document.execCommand('copy');document.getElementById(statusId).textContent='Copied or selected. If not, press Ctrl+C / long press copy.'}}
+makeTherEx();makeTherAct();makeGait();makeStairs();
+</script>
+</body>
+</html>
